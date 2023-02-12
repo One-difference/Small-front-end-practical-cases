@@ -1,0 +1,102 @@
+body{
+    --width: 400px;
+    --height: 200px;
+    --puzzle-width: 80px;
+    --puzzle-height: 80px;
+    --moved: -100px;
+
+    background-color: blue;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#captcha{
+    width: var(--width);
+    height: var(--height);
+    background-image: url(./snow.jpg);
+    background-size: cover;
+    background-position: center top;
+    position: relative;
+    border-radius: 4px;
+    box-shadow: 0px 2px 4px rgba(0,0,0,.3);
+}
+
+#captcha::before, #captcha::after{
+    display: block;
+    position: absolute;
+    content: '';
+    width: inherit;
+    height: inherit;
+    background-image: inherit;
+    background-size: inherit;
+    background-position: inherit;
+
+    clip-path: inset(
+        calc((var(--height) - var(--puzzle-height)) / 2)
+        var(--puzzle-width)
+        calc((var(--height) - var(--puzzle-height)) / 2)
+        calc(var(--width) - var(--puzzle-width) * 2)
+    );
+}
+
+#captcha::after{
+    transform: translateX(
+        clamp(
+            calc(var(--width) * -1),
+            calc(var(--width) * -1 + var(--moved)),
+            var(--puzzle-width)
+        )
+    );
+    transition: .25s all ease-in-out;
+}
+
+#captcha:active::after{
+    transition: none;
+}
+
+#captcha::before{
+    background-color: rgba(0,0,0,.6);
+    background-blend-mode: multiply;
+
+}
+
+#handle{
+    height: 30px;
+    width: calc(var(--width) + var(--puzzle-width) * 2);
+    border-radius: 18px;
+    background-color: #eee;
+    box-shadow: inset 0 0 12px rgba(0,0,0,.2);
+    border: 3px solid #ccc;
+    position: absolute;
+    bottom: -50px;
+    left: calc(var(--puzzle-width) * 2 * -1);
+}
+
+#handle span{
+    display: block;
+    width: var(--puzzle-width);
+    height: inherit;
+    background-color: #fff;
+    box-shadow: 0 0 6px rgba(0,0,0,.25), 0 2px 4px rgba(0,0,0,.3);
+    border-radius: inherit;
+    transform: translateX(
+        clamp(
+        0px,
+        var(--moved),
+        calc(var(--width) + var(--puzzle-width))
+    ));
+    transition: all .25s ease-in-out;
+}
+
+#captcha:active #handle span{
+    transition: none;
+}
+
+#captcha.passed::before,
+#captcha.passed::after,
+#captcha.passed #handle{
+    opacity: 0;
+}
